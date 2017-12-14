@@ -1,0 +1,2 @@
+D:\School\conc\Prakticum 2\NetChange\NetChange\bin\Debug\NetChange.exe.config
+D:\School\conc\Prakticum 2\NetChange\NetChange\obj\Debug\NetChange.csprojResolveAssemblyReference.cache
