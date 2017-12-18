@@ -27,6 +27,7 @@ namespace NetChange
             string[] inp = Console.ReadLine().Split();
             if (inp[0] == "R")
             {
+<<<<<<< HEAD
 
             }
             else
@@ -60,23 +61,51 @@ namespace NetChange
 
             //loop over buren
             for (int i = 1; i < inp.Length; i++)
+=======
+                Console.WriteLine("TABLE");
+            }
+            else
+>>>>>>> origin/master
             {
-                int poort = int.Parse(inp[i]);
-                V.Add(poort); //build V
+                MijnPoort = int.Parse(inp[0]);
+                V.Add(MijnPoort);
+                new Server(MijnPoort);
 
-                //handle sockets
-                if (MijnPoort < poort) //so you only open it once
+                //loop over buren
+                for (int i = 1; i < inp.Length; i++)
                 {
+<<<<<<< HEAD
                     //open socket
                     if (Buren.ContainsKey(poort))
                         Console.WriteLine("//Hier is al verbinding naar!");
                     else
+=======
+                    int poort = int.Parse(inp[i]);
+                    V.Add(poort); //build V
+
+                    //handle sockets
+                    if (MijnPoort < poort) //so you only open it once
+>>>>>>> origin/master
                     {
-                        // Leg verbinding aan (als client)
-                        Buren.Add(poort, new Connection(poort));
+                        //open socket
+                        if (Buren.ContainsKey(poort))
+                            Console.WriteLine("Hier is al verbinding naar!");
+                        else
+                        {
+                            // Leg verbinding aan (als client)
+                            Buren.Add(poort, new Connection(poort));
+                        }
                     }
                 }
             }
+<<<<<<< HEAD
+=======
+            
+
+            Initialize();
+
+            new Thread(() => HandleUserInput()).Start();
+>>>>>>> origin/master
         }
 
         public static void Recompute(int v)
