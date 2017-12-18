@@ -10,20 +10,42 @@ namespace NetChange
     {
         static void Main(string[] args)
         {
-            NetChange netchange = new NetChange();
+            Proces proces = new Proces();
         }
     }
     class NetChange
     {
-        string commando;
+        public NetChange()
+        {
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*string commando;
         string bericht;
-        int N; 
+        int N; // nodes in network
+        Node[] 
 
 
         public NetChange()
         {
-            Console.WriteLine("How many nodes in the network");
-            N = int.Parse(Console.ReadLine());
+           
+            N = 20; //max clinets for now
+            Node[20]
 
 
             string[] input = Console.ReadLine().Split();
@@ -67,6 +89,6 @@ namespace NetChange
         public void verbreekVerbinding()
         {
 
-        }
+        }*/
     }
 }
