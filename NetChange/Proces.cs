@@ -25,29 +25,37 @@ namespace NetChange
         {
             N = 20; //for now
             string[] inp = Console.ReadLine().Split();
-            MijnPoort = int.Parse(inp[0]);
-            V.Add(MijnPoort);
-            new Server(MijnPoort);
-            
-            //loop over buren
-            for (int i = 1; i < inp.Length; i++)
+            if (inp[0] == "R")
             {
-                int poort = int.Parse(inp[i]);
-                V.Add(poort); //build V
+                Console.WriteLine("TABLE");
+            }
+            else
+            {
+                MijnPoort = int.Parse(inp[0]);
+                V.Add(MijnPoort);
+                new Server(MijnPoort);
 
-                //handle sockets
-                if (MijnPoort < poort) //so you only open it once
+                //loop over buren
+                for (int i = 1; i < inp.Length; i++)
                 {
-                    //open socket
-                    if (Buren.ContainsKey(poort))
-                        Console.WriteLine("Hier is al verbinding naar!");
-                    else
+                    int poort = int.Parse(inp[i]);
+                    V.Add(poort); //build V
+
+                    //handle sockets
+                    if (MijnPoort < poort) //so you only open it once
                     {
-                        // Leg verbinding aan (als client)
-                        Buren.Add(poort, new Connection(poort));
+                        //open socket
+                        if (Buren.ContainsKey(poort))
+                            Console.WriteLine("Hier is al verbinding naar!");
+                        else
+                        {
+                            // Leg verbinding aan (als client)
+                            Buren.Add(poort, new Connection(poort));
+                        }
                     }
                 }
             }
+            
 
             Initialize();
 
