@@ -56,9 +56,15 @@ namespace NetChange
                         //update distance
                         string k = "" + conP + "," + input[1];
                         int v = int.Parse(input[2]);
+                        //if you don't know v, add it to your list
+                        if (!Proces.V.Contains(v))
+                        {
+                            Proces.V.Add(v);
+                            Proces.Recompute(v);
+                        }
                         if (Proces.ndis.ContainsKey(k))
                         {
-                            Proces.ndis[k] = v + 1; //step to neighbour + neighbour's cost
+                            Proces.ndis[k] = v; //step to neighbour + neighbour's cost
                         }
                     }
                 }

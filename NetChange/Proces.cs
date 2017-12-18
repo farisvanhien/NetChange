@@ -25,10 +25,39 @@ namespace NetChange
         {
             N = 20; //for now
             string[] inp = Console.ReadLine().Split();
+            if (inp[0] == "R")
+            {
+
+            }
+            else
+            {
+                methode1(inp);
+            }
+            
+
+            Initialize();
+
+            new Thread(() => HandleUserInput()).Start();
+        }
+        public void methode1(string[] inp)
+        {
+            try
+            {
+                initInput(inp);
+                Console.WriteLine("Connected");
+            }
+            catch {
+                Thread.Sleep(5000);
+                Console.WriteLine("Trying to connect...");
+                methode1(inp);
+            } 
+        }
+        public void initInput(string[] inp)
+        {
             MijnPoort = int.Parse(inp[0]);
             V.Add(MijnPoort);
-            new Server(MijnPoort);
-            
+            //new Server(MijnPoort);
+
             //loop over buren
             for (int i = 1; i < inp.Length; i++)
             {
@@ -40,7 +69,7 @@ namespace NetChange
                 {
                     //open socket
                     if (Buren.ContainsKey(poort))
-                        Console.WriteLine("Hier is al verbinding naar!");
+                        Console.WriteLine("//Hier is al verbinding naar!");
                     else
                     {
                         // Leg verbinding aan (als client)
@@ -48,20 +77,50 @@ namespace NetChange
                     }
                 }
             }
-
-            Initialize();
-
-            new Thread(() => HandleUserInput()).Start();
         }
 
-        public void Recompute(int v)
+        public static void Recompute(int v)
         {
+            int oldD = D[v];
             if(v == MijnPoort)
             {
                 D[v] = 0;
                 Nb[v] = local;
             }
-            ///////////////////////////32fvwf nbsrbes   gf
+            else
+            {
+                //estimate distance to v
+                int tempdis = N;
+                int tempNeigh = udef;
+                foreach (KeyValuePair<int, Connection> w in Buren) //get the closest neighbour to v
+                {
+                    string tmp = "" + w.Key + "," + v;
+                    if (ndis[tmp]  < tempdis)
+                    {
+                        tempdis = ndis[tmp];
+                        tempNeigh = w.Key;
+                    }
+                }
+                int d = 1 + tempdis;
+                if (d < N)
+                {
+                    D[v] = d;
+                    Nb[v] = tempNeigh;
+                }
+                else
+                {
+                    D[v] = N;
+                    Nb[v] = udef;
+                }
+            }
+            if (D[v] != oldD)
+            {
+                //send message to all neighbours
+                foreach (KeyValuePair<int, Connection> w in Buren)
+                {
+                    w.Value.Write.WriteLine("mydist " + v + D[v]);
+                }
+            }
         }
         //initializeer de beginwaarden
         public void Initialize()
@@ -76,8 +135,8 @@ namespace NetChange
                 D.Add(v, N);
                 Nb.Add(v, udef);
             }
-            D.Add(MijnPoort, 0);
-            Nb.Add(MijnPoort, MijnPoort);
+            D[MijnPoort] = 0;
+            Nb[MijnPoort] = MijnPoort;
             //stuur bericht naar de buren dat afstand tot jezelf 0 is
             foreach (KeyValuePair<int, Connection> w in Buren)
             {
@@ -99,6 +158,15 @@ namespace NetChange
                     {
                         // Leg verbinding aan (als client)
                         Buren.Add(poort, new Connection(poort));
+                    }
+                }
+                else if (input.StartsWith("R"))
+                {
+                    Console.WriteLine(" ");
+                    foreach(KeyValuePair<int, Connection> buren in Buren)
+                    {
+                        buren.Value.Write.WriteLine(buren.Key);
+                        buren.Value.Write.WriteLine("Table");
                     }
                 }
                 else
