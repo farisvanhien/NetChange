@@ -19,44 +19,15 @@ namespace NetChange
 
         static public int N; //size of network
         static public int udef = -1; //magicnumber to indicate impossible route
-        static public int local = -2; //magicnumber to indicate yourself
 
         public Proces()
         {
-            N = 20; //for now
-            string[] inp = Console.ReadLine().Split();
-            //if (inp[0] == "R")
-            //{
-
-
-            //}
-            //else
-            //{
-            //    methode1(inp);
-            //}
-
-
-
-            Initialize();
+            N = 20;
 
             new Thread(() => initInput()).Start();
         }
-        public void methode1(string[] inp)
-        {
-            try
-            {
-                initInput();
-                Console.WriteLine("Connected");
-            }
-            catch {
-                Thread.Sleep(5000);
-                Console.WriteLine("Trying to connect...");
-                methode1(inp);
-            } 
-        }
         public void initInput()
         {
-            string[] inp = Console.ReadLine().Split();
             while (true)
             {
                 string input = Console.ReadLine();
@@ -74,41 +45,105 @@ namespace NetChange
                 else if (input.StartsWith("B"))
                 {
                     // Stuur berichtje
-                    string[] delen = input.Split(new char[] { ' ' }, 2);
-                    int poort = int.Parse(delen[0]);
+                    string[] delen = input.Split(new char[] { ' ' }, 3);
+                    int poort = int.Parse(delen[1]);
                     if (!Buren.ContainsKey(poort))
-                        Console.WriteLine("Hier is al verbinding naar!");
+                        Console.WriteLine("//Hier is al verbinding naar!");
                     else
-                        Buren[poort].Write.WriteLine(MijnPoort + ": " + delen[1]);
+                        Buren[poort].Write.WriteLine(MijnPoort + ": " + delen[2]);
+                }
+                else if (input.StartsWith("R"))
+                {
+                    printTable();
+                }
+                else if (input.StartsWith("P"))
+                {
+                    Console.WriteLine("List V :");
+                    foreach (int v in V)
+                    {
+                        Console.WriteLine(v);
+                    }
+                    Console.WriteLine("List D :");
+                    foreach (KeyValuePair<int,int> d in D)
+                    {
+                        Console.WriteLine(d);
+                    }
+                    Console.WriteLine("List Nb :");
+                    foreach (KeyValuePair<int, int> nb in Nb)
+                    {
+                        Console.WriteLine(nb);
+                    }
+                    Console.WriteLine("List ndis :");
+                    foreach (KeyValuePair<string, int> ndis in ndis)
+                    {
+                        Console.WriteLine(ndis);
+                    }
                 }
                 else
                 {
-                    MijnPoort = int.Parse(inp[0]);
-                    V.Add(MijnPoort);
-                    new Server(MijnPoort);
-                    for (int i = 1; i<inp.Length;i++)
-                    {
-                        int poort = int.Parse(inp[i]);
-                        if (Buren.ContainsKey(poort))
-                            Console.WriteLine("Hier is al verbinding naar!");
-                        else
-                        {
-                            // Leg verbinding aan (als client)
-                            Buren.Add(poort, new Connection(poort));
-                        }
-                    }
+                    string[] inp = input.Split();
+                    tempsstart(inp);
                 }
             }
 
         }
 
-        public static void Recompute(int v)
+        public void tempsstart(string[] inp)
+        {
+            MijnPoort = int.Parse(inp[0]);
+            V.Add(MijnPoort);
+            new Server(MijnPoort);
+            for (int i = 1; i < inp.Length; i++)
+            {
+                int poort = int.Parse(inp[i]);
+                if (!V.Contains(poort))
+                {
+                    V.Add(poort);
+                }
+                if (Buren.ContainsKey(poort))
+                    Console.WriteLine("//Hier is al verbinding naar!");
+                else if(MijnPoort < poort)
+                {
+                    // Leg verbinding aan (als client)
+                    tryConnect(poort);
+                }
+            }
+            Initialize();
+        }
+
+        public void tryConnect(int poort)
+        {
+            try
+            {
+                Console.WriteLine("//Trying");
+                Buren.Add(poort, new Connection(poort));
+                Console.WriteLine("//Connected with " + poort);
+            }
+            catch
+            {
+                Console.WriteLine("//Trying to connect...");
+                Thread.Sleep(5000);
+                
+                tryConnect(poort);
+            }
+            
+        }
+
+        public static void Recompute()
+        {
+            foreach (int v in V)
+            {
+                RecomputeV(v);
+            }
+        }
+
+        public static void RecomputeV(int v)
         {
             int oldD = D[v];
             if(v == MijnPoort)
             {
                 D[v] = 0;
-                Nb[v] = local;
+                Nb[v] = MijnPoort;
             }
             else
             {
@@ -145,7 +180,8 @@ namespace NetChange
                 }
             }
         }
-        //initializeer de beginwaarden
+
+        //initializeer de beginwaarden in routing table
         public void Initialize()
         {
             foreach (int v in V)
@@ -167,42 +203,32 @@ namespace NetChange
             }
         }
 
-        public void HandleUserInput()
+        public void printTable()
         {
-            while (true)
+            foreach (KeyValuePair<int, Connection> w in Buren)
             {
-                string input = Console.ReadLine();
-                if (input.StartsWith("verbind"))
+                Console.WriteLine(w);
+            }
+            foreach (int v in V)
+            {
+                int res1 = Nb[v];
+                string res2;
+                if (res1 == udef)
                 {
-                    int poort = int.Parse(input.Split()[1]);
-                    if (Buren.ContainsKey(poort))
-                        Console.WriteLine("Hier is al verbinding naar!");
-                    else
-                    {
-                        // Leg verbinding aan (als client)
-                        Buren.Add(poort, new Connection(poort));
-                    }
+                    continue;
                 }
-                else if (input.StartsWith("R"))
+                else if (res1 == MijnPoort)
                 {
-                    Console.WriteLine(" ");
-                    foreach(KeyValuePair<int, Connection> buren in Buren)
-                    {
-                        buren.Value.Write.WriteLine(buren.Key);
-                        buren.Value.Write.WriteLine("Table");
-                    }
+                    res2 = "local";
                 }
                 else
                 {
-                    // Stuur berichtje
-                    string[] delen = input.Split(new char[] { ' ' }, 2);
-                    int poort = int.Parse(delen[0]);
-                    if (!Buren.ContainsKey(poort))
-                        Console.WriteLine("Hier is al verbinding naar!");
-                    else
-                        Buren[poort].Write.WriteLine(MijnPoort + ": " + delen[1]);
+                    res2 = res1.ToString();
                 }
+                string res = String.Format("{0} {1} {2}", v, D[v], res2);
+                Console.WriteLine(res);
             }
         }
+        
     }
 }

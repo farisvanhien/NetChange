@@ -49,27 +49,34 @@ namespace NetChange
             {
                 while (true)
                 {
-                    //HANDLE MESSAGE
-                    string[] input = Read.ReadLine().Split();
-                    if (input[0] == "mydist")
-                    {
-                        //update distance
-                        string k = "" + conP + "," + input[1];
-                        int v = int.Parse(input[2]);
-                        //if you don't know v, add it to your list
-                        if (!Proces.V.Contains(v))
-                        {
-                            Proces.V.Add(v);
-                            Proces.Recompute(v);
-                        }
-                        if (Proces.ndis.ContainsKey(k))
-                        {
-                            Proces.ndis[k] = v; //step to neighbour + neighbour's cost
-                        }
-                    }
+                    HandleMessage();
                 }
             }
             catch { } // Verbinding is kennelijk verbroken
         }
+
+        //HANDLE MESSAGE
+        public void HandleMessage()
+        {
+            string[] input = Read.ReadLine().Split();
+            if (input[0] == "mydist")
+            {
+                //update distance
+                string k = "" + conP + "," + input[1];
+                int v = int.Parse(input[2]);
+                //if you don't know v, add it to your list
+                if (!Proces.V.Contains(v))
+                {
+                    Proces.V.Add(v);
+                    Proces.RecomputeV(v);
+                }
+                if (Proces.ndis.ContainsKey(k))
+                {
+                    Proces.ndis[k] = 1 + v; //step to neighbour + neighbour's cost
+                }
+
+            }
+        }
     }
 }
+
