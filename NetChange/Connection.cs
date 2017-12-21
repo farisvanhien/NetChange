@@ -58,12 +58,14 @@ namespace NetChange
         //HANDLE MESSAGE
         public void HandleMessage()
         {
-            string[] input = Read.ReadLine().Split();
-            if (input[0] == "mydist")
+            string input = Read.ReadLine();
+            if (input.StartsWith("mydist"))
             {
+                Console.WriteLine(input);
                 //update distance
-                string k = "" + conP + "," + input[1];
-                int v = int.Parse(input[2]);
+                string[] inp = input.Split();
+                string k = "" + conP + "," + inp[1];
+                int v = int.Parse(inp[1]);
                 //if you don't know v, add it to your list
                 if (!Proces.V.Contains(v))
                 {
@@ -74,7 +76,11 @@ namespace NetChange
                 {
                     Proces.ndis[k] = 1 + v; //step to neighbour + neighbour's cost
                 }
-
+            }
+            else if (input.StartsWith("bericht"))
+            {
+                string[] delen = input.Split(new char[] { ' ' }, 2);
+                Console.WriteLine(delen[1]);
             }
         }
     }

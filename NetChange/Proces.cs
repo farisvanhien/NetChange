@@ -33,14 +33,8 @@ namespace NetChange
                 string input = Console.ReadLine();
                 if (input.StartsWith("C"))
                 {
-                    int poort = int.Parse(input.Split()[1]);
-                    if (Buren.ContainsKey(poort))
-                        Console.WriteLine("Hier is al verbinding naar!");
-                    else
-                    {
-                        // Leg verbinding aan (als client)
-                        Buren.Add(poort, new Connection(poort));
-                    }
+                    string[] inp = input.Split();
+                    initInitConnect(inp[1]);
                 }
                 else if (input.StartsWith("B"))
                 {
@@ -50,7 +44,7 @@ namespace NetChange
                     if (!Buren.ContainsKey(poort))
                         Console.WriteLine("//Hier is al verbinding naar!");
                     else
-                        Buren[poort].Write.WriteLine(MijnPoort + ": " + delen[2]);
+                        Buren[poort].Write.WriteLine("bericht" + MijnPoort + ": " + delen[2]);
                 }
                 else if (input.StartsWith("R"))
                 {
@@ -58,6 +52,11 @@ namespace NetChange
                 }
                 else if (input.StartsWith("P"))
                 {
+                    Console.WriteLine("List Buren : ");
+                    foreach (KeyValuePair<int, Connection> w in Buren)
+                    {
+                        Console.WriteLine(w);
+                    }
                     Console.WriteLine("List V :");
                     foreach (int v in V)
                     {
@@ -79,34 +78,45 @@ namespace NetChange
                         Console.WriteLine(ndis);
                     }
                 }
+                else if (input.StartsWith("D"))
+                {
+                    string[] inp = input.Split();
+                    int pnm = int.Parse(inp[1]);
+                    int val = int.Parse(inp[2]);
+                    D[pnm] = val;
+                }
                 else
                 {
                     string[] inp = input.Split();
-                    tempsstart(inp);
+                    initConnect(inp);
                 }
             }
-
         }
 
-        public void tempsstart(string[] inp)
+        public void initInitConnect(string poortstring)
+        {
+            int poort = int.Parse(poortstring);
+            if (!V.Contains(poort))
+            {
+                V.Add(poort);
+            }
+            if (Buren.ContainsKey(poort))
+                Console.WriteLine("//Hier is al verbinding naar!");
+            else if (MijnPoort < poort)
+            {
+                // Leg verbinding aan (als client)
+                tryConnect(poort);
+            }
+        }
+
+        public void initConnect(string[] inp)
         {
             MijnPoort = int.Parse(inp[0]);
             V.Add(MijnPoort);
             new Server(MijnPoort);
             for (int i = 1; i < inp.Length; i++)
             {
-                int poort = int.Parse(inp[i]);
-                if (!V.Contains(poort))
-                {
-                    V.Add(poort);
-                }
-                if (Buren.ContainsKey(poort))
-                    Console.WriteLine("//Hier is al verbinding naar!");
-                else if(MijnPoort < poort)
-                {
-                    // Leg verbinding aan (als client)
-                    tryConnect(poort);
-                }
+                initInitConnect(inp[i]);
             }
             Initialize();
         }
@@ -115,7 +125,6 @@ namespace NetChange
         {
             try
             {
-                Console.WriteLine("//Trying");
                 Buren.Add(poort, new Connection(poort));
                 Console.WriteLine("//Connected with " + poort);
             }
@@ -123,7 +132,6 @@ namespace NetChange
             {
                 Console.WriteLine("//Trying to connect...");
                 Thread.Sleep(5000);
-                
                 tryConnect(poort);
             }
             
@@ -176,7 +184,9 @@ namespace NetChange
                 //send message to all neighbours
                 foreach (KeyValuePair<int, Connection> w in Buren)
                 {
-                    w.Value.Write.WriteLine("mydist " + v + D[v]);
+                    string res = "mydist " + v + D[v];
+                    Console.WriteLine(res);
+                    w.Value.Write.WriteLine(res);
                 }
             }
         }
@@ -205,10 +215,6 @@ namespace NetChange
 
         public void printTable()
         {
-            foreach (KeyValuePair<int, Connection> w in Buren)
-            {
-                Console.WriteLine(w);
-            }
             foreach (int v in V)
             {
                 int res1 = Nb[v];
