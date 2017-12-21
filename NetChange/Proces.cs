@@ -25,26 +25,27 @@ namespace NetChange
         {
             N = 20; //for now
             string[] inp = Console.ReadLine().Split();
-            if (inp[0] == "R")
-            {
-<<<<<<< HEAD
+            //if (inp[0] == "R")
+            //{
 
-            }
-            else
-            {
-                methode1(inp);
-            }
-            
+
+            //}
+            //else
+            //{
+            //    methode1(inp);
+            //}
+
+
 
             Initialize();
 
-            new Thread(() => HandleUserInput()).Start();
+            new Thread(() => initInput()).Start();
         }
         public void methode1(string[] inp)
         {
             try
             {
-                initInput(inp);
+                initInput();
                 Console.WriteLine("Connected");
             }
             catch {
@@ -53,41 +54,41 @@ namespace NetChange
                 methode1(inp);
             } 
         }
-        public void initInput(string[] inp)
+        public void initInput()
         {
-            MijnPoort = int.Parse(inp[0]);
-            V.Add(MijnPoort);
-            //new Server(MijnPoort);
-
-            //loop over buren
-            for (int i = 1; i < inp.Length; i++)
-=======
-                Console.WriteLine("TABLE");
-            }
-            else
->>>>>>> origin/master
+            string[] inp = Console.ReadLine().Split();
+            while (true)
             {
-                MijnPoort = int.Parse(inp[0]);
-                V.Add(MijnPoort);
-                new Server(MijnPoort);
-
-                //loop over buren
-                for (int i = 1; i < inp.Length; i++)
+                string input = Console.ReadLine();
+                if (input.StartsWith("C"))
                 {
-<<<<<<< HEAD
-                    //open socket
+                    int poort = int.Parse(input.Split()[1]);
                     if (Buren.ContainsKey(poort))
-                        Console.WriteLine("//Hier is al verbinding naar!");
+                        Console.WriteLine("Hier is al verbinding naar!");
                     else
-=======
-                    int poort = int.Parse(inp[i]);
-                    V.Add(poort); //build V
-
-                    //handle sockets
-                    if (MijnPoort < poort) //so you only open it once
->>>>>>> origin/master
                     {
-                        //open socket
+                        // Leg verbinding aan (als client)
+                        Buren.Add(poort, new Connection(poort));
+                    }
+                }
+                else if (input.StartsWith("B"))
+                {
+                    // Stuur berichtje
+                    string[] delen = input.Split(new char[] { ' ' }, 2);
+                    int poort = int.Parse(delen[0]);
+                    if (!Buren.ContainsKey(poort))
+                        Console.WriteLine("Hier is al verbinding naar!");
+                    else
+                        Buren[poort].Write.WriteLine(MijnPoort + ": " + delen[1]);
+                }
+                else
+                {
+                    MijnPoort = int.Parse(inp[0]);
+                    V.Add(MijnPoort);
+                    new Server(MijnPoort);
+                    for (int i = 1; i<inp.Length;i++)
+                    {
+                        int poort = int.Parse(inp[i]);
                         if (Buren.ContainsKey(poort))
                             Console.WriteLine("Hier is al verbinding naar!");
                         else
@@ -98,14 +99,7 @@ namespace NetChange
                     }
                 }
             }
-<<<<<<< HEAD
-=======
-            
 
-            Initialize();
-
-            new Thread(() => HandleUserInput()).Start();
->>>>>>> origin/master
         }
 
         public static void Recompute(int v)
