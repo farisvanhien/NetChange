@@ -52,8 +52,13 @@ namespace NetChange
                     // Stuur berichtje
                     string[] delen = input.Split(new char[] { ' ' }, 3);
                     int poort = int.Parse(delen[1]);
-                    int sendto = Proces.Nb[int.Parse(delen[1])];
-                    Buren[sendto].Write.WriteLine("bericht" + " " + poort + " " + delen[2]);
+                    if (!V.Contains(poort))
+                        Console.WriteLine("Poort " + poort + " is niet bekend");
+                    else
+                    {
+                        int sendto = Proces.Nb[int.Parse(delen[1])];
+                        Buren[sendto].Write.WriteLine("bericht" + " " + poort + " " + delen[2]);
+                    }
                 }
                 else if (input.StartsWith("R"))
                 {
@@ -65,7 +70,13 @@ namespace NetChange
                 }
                 else if (input.StartsWith("D"))
                 {
-                    Console.WriteLine("use this to delete connection");
+                    string[] inp = input.Split();
+                    if (!V.Contains(int.Parse(inp[1])))
+                        Console.WriteLine("Poort " + inp[1] + " is niet bekend");
+                    else
+                    {
+
+                    }
                 }
                 else if (input.StartsWith("X"))
                 {
@@ -74,7 +85,6 @@ namespace NetChange
                     int val = int.Parse(inp[2]);
                     D[pnm] = val;
                 }
-
             }
         }
 
@@ -305,8 +315,7 @@ namespace NetChange
                 {
                     res2 = res1.ToString();
                 }
-                string res = String.Format("{0} {1} {2}", v, D[v], res2);
-                Console.WriteLine(res);
+                Console.WriteLine("{0} {1} {2}", v, D[v], res2);
             }
         }
     }

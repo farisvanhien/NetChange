@@ -94,7 +94,7 @@ namespace NetChange
                 else
                 {
                     int sendto = Proces.Nb[int.Parse(delen[1])];
-                    Console.WriteLine("Bericht voor " + delen[1] + " doorgestuurd naar " + sendto);
+                    Console.WriteLine("Bericht voor {0} doorgestuurd naar {1}", delen[1], sendto);
                     Proces.Buren[sendto].Write.WriteLine(input);
                 }
                     
