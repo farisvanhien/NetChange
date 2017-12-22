@@ -163,7 +163,6 @@ namespace NetChange
 
         public static void RecomputeV(int v)
         {
-            Console.WriteLine("//recomputing " + v);
             int oldD = D[v];
             if(v == MijnPoort)
             {
@@ -199,6 +198,7 @@ namespace NetChange
             }
             if (D[v] != oldD)
             {
+                Console.WriteLine("Afstand naar {0} is nu {1} via {2}", v, D[v], Nb[v]);
                 //send message to all neighbours
                 foreach (KeyValuePair<int, Connection> w in Buren)
                 {
