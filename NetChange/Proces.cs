@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace NetChange
 {
-    internal class Proces
+    class Proces
     {
         static public int MijnPoort;
         static public Dictionary<int, Connection> Buren = new Dictionary<int, Connection>();
