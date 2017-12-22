@@ -32,8 +32,9 @@ namespace NetChange
         }
 
         // Deze constructor wordt gebruikt als wij SERVER zijn en een CLIENT maakt met ons verbinding
-        public Connection(StreamReader read, StreamWriter write)
+        public Connection(StreamReader read, StreamWriter write, int port)
         {
+            conP = port;
             Read = read; Write = write;
 
             // Start het reader-loopje
@@ -61,21 +62,22 @@ namespace NetChange
             string input = Read.ReadLine();
             if (input.StartsWith("mydist"))
             {
-                Console.WriteLine(input);
+                Console.WriteLine("//    from " +conP + ": " + input);
                 //update distance
                 string[] inp = input.Split();
                 string k = "" + conP + "," + inp[1];
                 int v = int.Parse(inp[1]);
+                int dist = int.Parse(inp[2]);
                 //if you don't know v, add it to your list
                 if (!Proces.V.Contains(v))
                 {
+                    Console.WriteLine("//v does not exist yet");
                     Proces.V.Add(v);
-                    Proces.RecomputeV(v);
+                    Proces.InitValue(v);
                 }
-                if (Proces.ndis.ContainsKey(k))
-                {
-                    Proces.ndis[k] = 1 + v; //step to neighbour + neighbour's cost
-                }
+                Console.WriteLine("//ndis[" + k + "] = " + dist);
+                Proces.ndis[k] = dist;
+                Proces.RecomputeV(v);
             }
             else if (input.StartsWith("bericht"))
             {
