@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace NetChange
 {
-    class Proces
+    internal class Proces
     {
         static public int MijnPoort;
         static public Dictionary<int, Connection> Buren = new Dictionary<int, Connection>();
@@ -20,13 +20,20 @@ namespace NetChange
         static public int N; //size of network
         static public int udef = -1; //magicnumber to indicate impossible route
 
-        public Proces()
-        {
-            N = 20;
 
+        static void Main(string[] args)
+        {
+
+
+            N = 20;
+            initConnect(args);
+
+            Console.Title = "Netchange " + MijnPoort;
             new Thread(() => initInput()).Start();
+
         }
-        public void initInput()
+
+        public static void initInput()
         {
             while (true)
             {
@@ -85,15 +92,11 @@ namespace NetChange
                     int val = int.Parse(inp[2]);
                     D[pnm] = val;
                 }
-                else
-                {
-                    string[] inp = input.Split();
-                    initConnect(inp);
-                }
+
             }
         }
 
-        public void initInitConnect(string poortstring)
+        public static void initInitConnect(string poortstring)
         {
             int poort = int.Parse(poortstring);
             if (!V.Contains(poort))
@@ -109,11 +112,11 @@ namespace NetChange
             }
         }
 
-        public void initConnect(string[] inp)
+        public static void initConnect(string[] inp)
         {
             MijnPoort = int.Parse(inp[0]);
-            V.Add(MijnPoort);
             new Server(MijnPoort);
+            V.Add(MijnPoort);
             for (int i = 1; i < inp.Length; i++)
             {
                 initInitConnect(inp[i]);
@@ -121,7 +124,7 @@ namespace NetChange
             Initialize();
         }
 
-        public void tryConnect(int poort)
+        public static void tryConnect(int poort)
         {
             try
             {
@@ -131,7 +134,7 @@ namespace NetChange
             catch
             {
                 Console.WriteLine("//Trying to connect...");
-                Thread.Sleep(5000);
+                Thread.Sleep(500);
                 tryConnect(poort);
             }
             
@@ -192,7 +195,7 @@ namespace NetChange
         }
 
         //initializeer de beginwaarden in routing table
-        public void Initialize()
+        public static void Initialize()
         {
             foreach (int v in V)
             {
@@ -213,7 +216,7 @@ namespace NetChange
             }
         }
 
-        public void printTable()
+        public static void printTable()
         {
             foreach (int v in V)
             {
