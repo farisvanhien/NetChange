@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace NetChange
 {
-    internal class Proces
+    class Proces
     {
         static public int MijnPoort;
         static public Dictionary<int, Connection> Buren = new Dictionary<int, Connection>();
@@ -87,6 +87,10 @@ namespace NetChange
                     }
                 }
                 else if (input.StartsWith("D"))
+                {
+                    Console.WriteLine("use this to delete connection");
+                }
+                else if (input.StartsWith("X"))
                 {
                     string[] inp = input.Split();
                     int pnm = int.Parse(inp[1]);
