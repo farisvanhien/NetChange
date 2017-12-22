@@ -36,7 +36,7 @@ namespace NetChange
                 Console.WriteLine("//Client maakt verbinding: " + zijnPoort);
 
                 // Zet de nieuwe verbinding in de verbindingslijst
-                Proces.Buren.Add(zijnPoort, new Connection(clientIn, clientOut));
+                Proces.Buren.Add(zijnPoort, new Connection(clientIn, clientOut, zijnPoort));
                 //Proces.Recompute();
             }
         }

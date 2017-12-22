@@ -121,6 +121,7 @@ namespace NetChange
             {
                 initInitConnect(inp[i]);
             }
+            Console.WriteLine("//starting initialize");
             Initialize();
         }
 
@@ -140,7 +141,7 @@ namespace NetChange
             
         }
 
-        public static void Recompute()
+        public static void Recompute(bool i)
         {
             foreach (int v in V)
             {
@@ -150,6 +151,7 @@ namespace NetChange
 
         public static void RecomputeV(int v)
         {
+            Console.WriteLine("//recomputing " + v);
             int oldD = D[v];
             if(v == MijnPoort)
             {
@@ -171,6 +173,7 @@ namespace NetChange
                     }
                 }
                 int d = 1 + tempdis;
+                Console.WriteLine("// newdis = " + d);
                 if (d < N)
                 {
                     D[v] = d;
@@ -187,9 +190,9 @@ namespace NetChange
                 //send message to all neighbours
                 foreach (KeyValuePair<int, Connection> w in Buren)
                 {
-                    string res = "mydist " + v + D[v];
-                    Console.WriteLine(res);
-                    w.Value.Write.WriteLine(res);
+                    string message = "mydist " + v + " " + D[v];
+                    Console.WriteLine("//   me to " + w.Key + ": " + message);
+                    w.Value.Write.WriteLine(message);
                 }
             }
         }
@@ -197,25 +200,35 @@ namespace NetChange
         //initializeer de beginwaarden in routing table
         public static void Initialize()
         {
+            Console.WriteLine("//number of neighs: " + Buren.Count);
             foreach (int v in V)
             {
-                foreach (KeyValuePair<int, Connection> w in Buren)
-                {
-                    string tmp = "" + w.Key + "," + v;
-                    ndis.Add(tmp, N);
-                }
-                D.Add(v, N);
-                Nb.Add(v, udef);
+                InitValue(v);
             }
             D[MijnPoort] = 0;
             Nb[MijnPoort] = MijnPoort;
             //stuur bericht naar de buren dat afstand tot jezelf 0 is
             foreach (KeyValuePair<int, Connection> w in Buren)
             {
-                w.Value.Write.WriteLine("mydist " + MijnPoort + " " + 0);
+                string message = "mydist " + MijnPoort + " " + 0;
+                Console.WriteLine("//   me to " + w.Key + ": " + message);
+                w.Value.Write.WriteLine(message);
             }
         }
 
+        //sets the initial values for v in the dictionaries
+        public static void InitValue(int v)
+        {
+            foreach (KeyValuePair<int, Connection> w in Buren)
+            {
+                string tmp = "" + w.Key + "," + v;
+                ndis[tmp] = N;
+            }
+            D[v] = N;
+            Nb[v] = udef;
+        }
+        
+        //prints routing table
         public static void printTable()
         {
             foreach (int v in V)
