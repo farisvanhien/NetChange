@@ -39,7 +39,13 @@ namespace NetChange
                 if (input.StartsWith("C"))
                 {
                     string[] inp = input.Split();
-                    initInitConnect(inp[1]);
+                    int poort = int.Parse(inp[1]);
+                    //initInitConnect(inp[1]);
+                    Object thisLock = new object();
+                    lock (thisLock)
+                    {
+                        makeConnection(poort);
+                    }
                 }
                 else if (input.StartsWith("B"))
                 {
@@ -55,31 +61,7 @@ namespace NetChange
                 }
                 else if (input.StartsWith("P"))
                 {
-                    Console.WriteLine("List Buren : ");
-                    foreach (KeyValuePair<int, Connection> w in Buren)
-                    {
-                        Console.WriteLine(w);
-                    }
-                    Console.WriteLine("List V :");
-                    foreach (int v in V)
-                    {
-                        Console.WriteLine(v);
-                    }
-                    Console.WriteLine("List D :");
-                    foreach (KeyValuePair<int,int> d in D)
-                    {
-                        Console.WriteLine(d);
-                    }
-                    Console.WriteLine("List Nb :");
-                    foreach (KeyValuePair<int, int> nb in Nb)
-                    {
-                        Console.WriteLine(nb);
-                    }
-                    Console.WriteLine("List ndis :");
-                    foreach (KeyValuePair<string, int> ndis in ndis)
-                    {
-                        Console.WriteLine(ndis);
-                    }
+                    testprint();
                 }
                 else if (input.StartsWith("D"))
                 {
@@ -96,6 +78,69 @@ namespace NetChange
             }
         }
 
+        //print alle informtaie voor debuggen
+        public static void testprint()
+        {
+            Console.WriteLine("List Buren : ");
+            foreach (KeyValuePair<int, Connection> w in Buren)
+            {
+                Console.WriteLine(w);
+            }
+            Console.WriteLine("List V :");
+            foreach (int v in V)
+            {
+                Console.WriteLine(v);
+            }
+            Console.WriteLine("List D :");
+            foreach (KeyValuePair<int, int> d in D)
+            {
+                Console.WriteLine(d);
+            }
+            Console.WriteLine("List Nb :");
+            foreach (KeyValuePair<int, int> nb in Nb)
+            {
+                Console.WriteLine(nb);
+            }
+            Console.WriteLine("List ndis :");
+            foreach (KeyValuePair<string, int> ndis in ndis)
+            {
+                Console.WriteLine(ndis);
+            }
+        }
+
+        //maakt een niewe verbinding aan
+        public static void makeConnection(int poort)
+        {
+            if (!V.Contains(poort))
+            {
+                Console.WriteLine("//error: poort bestaat niet");
+            }
+            else
+            {
+                // Leg verbinding aan (als client)
+                tryConnect(poort);
+                //Update je tabel
+                D[poort] = 1;
+                Nb[poort] = poort;
+                //laat al je buren recomputen
+                foreach (KeyValuePair<int, Connection> w in Buren)
+                {
+                    myDistMessage(poort, w.Key, 1);
+                }
+                //Laat de ander van jouw weten en zijn informatie updaten
+                myDistMessage(MijnPoort, poort, 0);
+
+            }
+        }
+
+        public static void myDistMessage(int distanceTo, int sendMto, int dist)
+        {
+            string message = "mydist " + distanceTo + " " + dist;
+            Console.WriteLine("//   me to " + sendMto + ": " + message);
+            Buren[sendMto].Write.WriteLine(message);
+        }
+
+        //maak verbinding met een poort, en wacht! tot het lukt
         public static void initInitConnect(string poortstring)
         {
             int poort = int.Parse(poortstring);
@@ -153,7 +198,7 @@ namespace NetChange
             }
         }
 
-        public static void Recompute(bool i)
+        public static void RecomputeAll()
         {
             foreach (int v in V)
             {
@@ -164,7 +209,7 @@ namespace NetChange
         public static void RecomputeV(int v)
         {
             int oldD = D[v];
-            if(v == MijnPoort)
+            if (v == MijnPoort)
             {
                 D[v] = 0;
                 Nb[v] = MijnPoort;
@@ -177,7 +222,7 @@ namespace NetChange
                 foreach (KeyValuePair<int, Connection> w in Buren) //get the closest neighbour to v
                 {
                     string tmp = "" + w.Key + "," + v;
-                    if (ndis[tmp]  < tempdis)
+                    if (ndis[tmp] < tempdis)
                     {
                         tempdis = ndis[tmp];
                         tempNeigh = w.Key;
@@ -240,7 +285,7 @@ namespace NetChange
             D[v] = N;
             Nb[v] = udef;
         }
-        
+
         //prints routing table
         public static void printTable()
         {
