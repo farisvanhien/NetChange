@@ -139,7 +139,6 @@ namespace NetChange
                 }
                 //Laat de ander van jouw weten en zijn informatie updaten
                 myDistMessage(MijnPoort, poort, 0);
-
             }
         }
 
@@ -190,6 +189,7 @@ namespace NetChange
             {
                 Buren.Add(poort, new Connection(poort));
                 Console.WriteLine("//Connected with " + poort);
+                Console.WriteLine("Verbonden: " + poort);
             }
             catch
             {

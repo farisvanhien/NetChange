@@ -34,6 +34,7 @@ namespace NetChange
                 int zijnPoort = int.Parse(clientIn.ReadLine().Split()[1]);
 
                 Console.WriteLine("//Client maakt verbinding: " + zijnPoort);
+                Console.WriteLine("Verbonden: " + zijnPoort);
 
                 // Zet de nieuwe verbinding in de verbindingslijst
                 Proces.Buren.Add(zijnPoort, new Connection(clientIn, clientOut, zijnPoort));
