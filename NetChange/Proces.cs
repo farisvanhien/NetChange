@@ -24,14 +24,11 @@ namespace NetChange
 
         static void Main(string[] args)
         {
-
-
             N = 20;
             initConnect(args);
 
             Console.Title = "Netchange " + MijnPoort;
             new Thread(() => initInput()).Start();
-
         }
 
         public static void initInput()
@@ -49,10 +46,8 @@ namespace NetChange
                     // Stuur berichtje
                     string[] delen = input.Split(new char[] { ' ' }, 3);
                     int poort = int.Parse(delen[1]);
-                    if (!Buren.ContainsKey(poort))
-                        Console.WriteLine("//Hier is al verbinding naar!");
-                    else
-                        Buren[poort].Write.WriteLine("bericht" + MijnPoort + ": " + delen[2]);
+                    int sendto = Proces.Nb[int.Parse(delen[1])];
+                    Buren[sendto].Write.WriteLine("bericht" + " " + poort + " " + delen[2]);
                 }
                 else if (input.StartsWith("R"))
                 {
@@ -147,7 +142,6 @@ namespace NetChange
                 Thread.Sleep(1000);
                 tryConnect(poort);
             }
-            
         }
 
         public static void waitConnect(int poort)
@@ -270,6 +264,5 @@ namespace NetChange
                 Console.WriteLine(res);
             }
         }
-        
     }
 }

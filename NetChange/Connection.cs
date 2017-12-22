@@ -87,8 +87,17 @@ namespace NetChange
             }
             else if (input.StartsWith("bericht"))
             {
-                string[] delen = input.Split(new char[] { ' ' }, 2);
-                Console.WriteLine(delen[1]);
+                string[] delen = input.Split(new char[] { ' ' }, 3);
+                
+                if (delen[1] == Proces.MijnPoort.ToString())
+                    Console.WriteLine(delen[2]);
+                else
+                {
+                    int sendto = Proces.Nb[int.Parse(delen[1])];
+                    Console.WriteLine("Bericht voor " + delen[1] + " doorgestuurd naar " + sendto);
+                    Proces.Buren[sendto].Write.WriteLine(input);
+                }
+                    
             }
         }
     }
