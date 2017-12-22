@@ -20,6 +20,7 @@ namespace NetChange
         static public int N; //size of network
         static public int udef = -1; //magicnumber to indicate impossible route
 
+        static public bool Ready = false;
 
         static void Main(string[] args)
         {
@@ -110,6 +111,10 @@ namespace NetChange
                 // Leg verbinding aan (als client)
                 tryConnect(poort);
             }
+            else
+            {
+                waitConnect(poort);
+            }
         }
 
         public static void initConnect(string[] inp)
@@ -135,10 +140,19 @@ namespace NetChange
             catch
             {
                 Console.WriteLine("//Trying to connect...");
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
                 tryConnect(poort);
             }
             
+        }
+
+        public static void waitConnect(int poort)
+        {
+            while (!Buren.ContainsKey(poort))
+            {
+                Console.WriteLine("//waiting till connection with: " + poort);
+                Thread.Sleep(1000);
+            }
         }
 
         public static void Recompute(bool i)
@@ -173,7 +187,7 @@ namespace NetChange
                     }
                 }
                 int d = 1 + tempdis;
-                Console.WriteLine("// newdis = " + d);
+                Console.WriteLine("//newdis = " + d);
                 if (d < N)
                 {
                     D[v] = d;
@@ -214,6 +228,7 @@ namespace NetChange
                 Console.WriteLine("//   me to " + w.Key + ": " + message);
                 w.Value.Write.WriteLine(message);
             }
+            Ready = true;
         }
 
         //sets the initial values for v in the dictionaries

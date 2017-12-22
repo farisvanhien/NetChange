@@ -46,6 +46,12 @@ namespace NetChange
         // Deze loop leest wat er binnenkomt en print dit
         public void ReaderThread()
         {
+            //first check if all connections are set and initialized
+            while (!Proces.Ready)
+            {
+                Console.WriteLine("//waiting till initializing is done...");
+                Thread.Sleep(1000);
+            }
             try
             {
                 while (true)
