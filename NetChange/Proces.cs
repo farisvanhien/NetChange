@@ -87,6 +87,10 @@ namespace NetChange
                 }
                 else if (input.StartsWith("D"))
                 {
+                    Console.WriteLine("use this to delete connection");
+                }
+                else if (input.StartsWith("X"))
+                {
                     string[] inp = input.Split();
                     int pnm = int.Parse(inp[1]);
                     int val = int.Parse(inp[2]);
