@@ -59,7 +59,11 @@ namespace NetChange
                     HandleMessage();
                 }
             }
-            catch { } // Verbinding is kennelijk verbroken
+            catch // Verbinding is kennelijk verbroken
+            {
+                Console.WriteLine("//verbinding met " + conP + " is verbroken");
+                Proces.Disconnect(conP);
+            }
         }
 
         //HANDLE MESSAGE
@@ -101,6 +105,10 @@ namespace NetChange
             else if (input.StartsWith("reqTab"))
             {
                 Proces.messageMyTable(conP);
+            }
+            else if (input.StartsWith("disconnect"))
+            {
+                throw new Exception();
             }
         }
     }

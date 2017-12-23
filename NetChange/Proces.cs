@@ -71,7 +71,10 @@ namespace NetChange
                         Console.WriteLine("Poort " + inp[1] + " is niet bekend");
                     else
                     {
-
+                        int poort = int.Parse(inp[1]);
+                        //verbreek verbinding
+                        Buren[poort].Write.WriteLine("disconnect");
+                        Disconnect(poort);
                     }
                 }
                 else if (input.StartsWith("X"))
@@ -133,19 +136,35 @@ namespace NetChange
                 requestTable(poort);
             }
         }
+        //verbreek verbinding
+        public static void Disconnect(int poort)
+        {
+            Console.WriteLine("//disconnecting...");
+            Buren.Remove(poort);
+            D[poort] = N;
+            Nb[poort] = udef;
+            foreach (KeyValuePair<int, Connection> w in Buren)
+            {
+                myDistMessage(poort, w.Key, D[poort]);
+            }
+            RecomputeAll();
+        }
 
+        //bericht naar proces met jouw afstand tot v
         public static void myDistMessage(int distanceTo, int sendMto, int dist)
         {
             string message = "mydist " + distanceTo + " " + dist;
             Console.WriteLine("//   me to " + sendMto + ": " + message);
             Buren[sendMto].Write.WriteLine(message);
         }
+        //vraag tabel informatie van een buur
         public static void requestTable(int sendMto)
         {
             string message = "reqTab";
             Console.WriteLine("//   me to " + sendMto + ": table request");
             Buren[sendMto].Write.WriteLine(message);
         }
+        //verzend jouw tabel informatie naar buur die opvraagt
         public static void messageMyTable(int newPoort)
         {
             //laat al je buren weten van je nieuwe connectie
@@ -180,7 +199,7 @@ namespace NetChange
                 waitConnect(poort);
             }
         }
-
+        //maak server en connecties met buren
         public static void initConnect(string[] inp)
         {
             MijnPoort = int.Parse(inp[0]);
@@ -193,7 +212,7 @@ namespace NetChange
             Console.WriteLine("//starting initialize");
             Initialize();
         }
-
+        //try connecting, sleep and try again
         public static void tryConnect(int poort)
         {
             try
@@ -209,7 +228,7 @@ namespace NetChange
                 tryConnect(poort);
             }
         }
-
+        //wait till connection is started
         public static void waitConnect(int poort)
         {
             while (!Buren.ContainsKey(poort))
@@ -226,7 +245,7 @@ namespace NetChange
                 RecomputeV(v);
             }
         }
-
+        //recompute closest distance, if it is changed send message to neighs
         public static void RecomputeV(int v)
         {
             int oldD = D[v];
@@ -274,7 +293,6 @@ namespace NetChange
                 }
             }
         }
-
         //initializeer de beginwaarden in routing table
         public static void Initialize()
         {
@@ -294,7 +312,6 @@ namespace NetChange
             }
             Ready = true;
         }
-
         //sets the initial values for v in the dictionaries
         public static void InitValue(int v)
         {
