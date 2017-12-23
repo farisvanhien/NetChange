@@ -121,17 +121,14 @@ namespace NetChange
         //maakt een niewe verbinding aan
         public static void makeConnection(int poort)
         {
-
             // Leg verbinding aan (als client)
             tryConnect(poort);
-
             //Update je tabel
             D[poort] = 1;
             Nb[poort] = poort;
             //update de informatie
             messageMyTable(poort);
             requestTable(poort);
-            
         }
         //verbreek verbinding
         public static void Disconnect(int poort)
@@ -308,9 +305,7 @@ namespace NetChange
                     //Console.WriteLine("//   me to " + w.Key + ": " + message);
                     w.Value.Write.WriteLine(message);
                 }
-              
             }
-            
         }
         //initializeer de beginwaarden in routing table
         public static void Initialize()
