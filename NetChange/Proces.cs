@@ -283,7 +283,14 @@ namespace NetChange
             }
             if (D[v] != oldD)
             {
-                Console.WriteLine("Afstand naar {0} is nu {1} via {2}", v, D[v], Nb[v]);
+                if (D[v] == N)
+                {
+                    Console.WriteLine("Onbereikbaar: " + v);
+                }
+                else
+                {
+                    Console.WriteLine("Afstand naar {0} is nu {1} via {2}", v, D[v], Nb[v]);
+                }
                 //send message to all neighbours
                 foreach (KeyValuePair<int, Connection> w in Buren)
                 {
