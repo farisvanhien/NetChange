@@ -90,13 +90,6 @@ namespace NetChange
                         }
                     }
                 }
-                else if (input.StartsWith("X"))
-                {
-                    string[] inp = input.Split();
-                    int pnm = int.Parse(inp[1]);
-                    int val = int.Parse(inp[2]);
-                    D[pnm] = val;
-                }
             }
         }
 
