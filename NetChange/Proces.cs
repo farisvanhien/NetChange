@@ -215,7 +215,7 @@ namespace NetChange
             try
             {
                 Buren.Add(poort, new Connection(poort));
-                
+
                 //Console.WriteLine("//Connected with " + poort);
                 Console.WriteLine("Verbonden: " + poort);
             }
@@ -242,7 +242,7 @@ namespace NetChange
             {
                 RecomputeV(v);
             }
-            
+
         }
         //recompute closest distance, if it is changed send message to neighs
         public static void RecomputeV(int v)
@@ -271,9 +271,9 @@ namespace NetChange
                         tempdis = ndis[tmp];
                         tempNeigh = w.Key;
                     }
-                    
-                    
-                    
+
+
+
                 }
                 int d = 1 + tempdis;
                 //Console.WriteLine("//newdis = " + d);
@@ -310,7 +310,7 @@ namespace NetChange
         //initializeer de beginwaarden in routing table
         public static void Initialize()
         {
-           // Console.WriteLine("//number of neighs: " + Buren.Count);
+            // Console.WriteLine("//number of neighs: " + Buren.Count);
             foreach (int v in V)
             {
                 InitValue(v);
@@ -341,7 +341,7 @@ namespace NetChange
         //prints routing table
         public static void printTable()
         {
-            
+
             foreach (int v in V)
             {
                 int res1 = Nb[v];
