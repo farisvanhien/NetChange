@@ -184,7 +184,7 @@ namespace NetChange
         }
 
         //maak verbinding met een poort, en wacht tot het lukt
-        public static void initInitConnect(string poortstring)
+        public static void Connect(string poortstring)
         {
             int poort = int.Parse(poortstring);
             if (!V.Contains(poort))
@@ -209,7 +209,7 @@ namespace NetChange
             V.Add(MijnPoort);
             for (int i = 1; i < inp.Length; i++)
             {
-                initInitConnect(inp[i]);
+                Connect(inp[i]);
             }
             Initialize();
         }
