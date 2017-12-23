@@ -145,7 +145,6 @@ namespace NetChange
         //verbreek verbinding
         public static void Disconnect(int poort)
         {
-            //Console.WriteLine("//disconnecting...");
             Buren.Remove(poort);
             Console.WriteLine("Verbroken: " + poort);
             D[poort] = N;
@@ -161,7 +160,6 @@ namespace NetChange
         public static void myDistMessage(int distanceTo, int sendMto, int dist)
         {
             string message = "mydist " + distanceTo + " " + dist;
-            //Console.WriteLine("//   me to " + sendMto + ": " + message);
             Buren[sendMto].Write.WriteLine(message);
         }
         //vraag tabel informatie van een buur
@@ -193,11 +191,7 @@ namespace NetChange
             {
                 V.Add(poort);
             }
-            if (Buren.ContainsKey(poort))
-            {
-                //Console.WriteLine("//Hier is al verbinding naar!");
-            }
-            else if (MijnPoort < poort)
+            if (MijnPoort < poort)
             {
                 // Leg verbinding aan (als client)
                 tryConnect(poort);

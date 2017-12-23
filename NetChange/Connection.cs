@@ -83,7 +83,6 @@ namespace NetChange
                 {
                     if (!Proces.V.Contains(v))
                     {
-                        //Console.WriteLine("//v does not exist yet");
                         Proces.V.Add(v);
                         Proces.InitValue(v);
                     }
