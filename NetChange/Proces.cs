@@ -42,6 +42,7 @@ namespace NetChange
                     int poort = int.Parse(inp[1]);
                     //initInitConnect(inp[1]);
                     makeConnection(poort);
+                    RecomputeAll();
                 }
                 else if (input.StartsWith("B"))
                 {
@@ -52,7 +53,7 @@ namespace NetChange
                         Console.WriteLine("Poort " + poort + " is niet bekend");
                     else
                     {
-                        int sendto = Proces.Nb[int.Parse(delen[1])];
+                        int sendto = Nb[int.Parse(delen[1])];
                         Buren[sendto].Write.WriteLine("bericht" + " " + poort + " " + delen[2]);
                     }
                 }
@@ -120,9 +121,10 @@ namespace NetChange
         //maakt een niewe verbinding aan
         public static void makeConnection(int poort)
         {
-            
+
             // Leg verbinding aan (als client)
             tryConnect(poort);
+
             //Update je tabel
             D[poort] = 1;
             Nb[poort] = poort;
@@ -144,13 +146,14 @@ namespace NetChange
                 myDistMessage(poort, w.Key, D[poort]);
             }
             RecomputeAll();
+            RecomputeAll();
         }
 
         //bericht naar proces met jouw afstand tot v
         public static void myDistMessage(int distanceTo, int sendMto, int dist)
         {
             string message = "mydist " + distanceTo + " " + dist;
-            Console.WriteLine("//   me to " + sendMto + ": " + message);
+            //Console.WriteLine("//   me to " + sendMto + ": " + message);
             Buren[sendMto].Write.WriteLine(message);
         }
         //vraag tabel informatie van een buur
@@ -168,14 +171,14 @@ namespace NetChange
             {
                 myDistMessage(newPoort, w.Key, 1);
             }
-            //Laat de niew connectie van jouw routing table weten 
+            //Laat de nieuwe connectie van jouw routing table weten 
             foreach (int v in V)
             {
                 myDistMessage(v, newPoort, D[v]);
             }
         }
 
-        //maak verbinding met een poort, en wacht! tot het lukt
+        //maak verbinding met een poort, en wacht tot het lukt
         public static void initInitConnect(string poortstring)
         {
             int poort = int.Parse(poortstring);
@@ -207,6 +210,7 @@ namespace NetChange
             }
             //Console.WriteLine("//starting initialize");
             Initialize();
+            RecomputeAll();
         }
         //try connecting, sleep and try again
         public static void tryConnect(int poort)
@@ -214,6 +218,7 @@ namespace NetChange
             try
             {
                 Buren.Add(poort, new Connection(poort));
+                
                 //Console.WriteLine("//Connected with " + poort);
                 Console.WriteLine("Verbonden: " + poort);
             }
@@ -240,10 +245,12 @@ namespace NetChange
             {
                 RecomputeV(v);
             }
+            
         }
         //recompute closest distance, if it is changed send message to neighs
         public static void RecomputeV(int v)
         {
+            N = V.Count();
             int oldD = D[v];
             if (v == MijnPoort)
             {
@@ -257,12 +264,19 @@ namespace NetChange
                 int tempNeigh = udef;
                 foreach (KeyValuePair<int, Connection> w in Buren) //get the closest neighbour to v
                 {
-                    string tmp = "" + w.Key + "," + v;
-                    if (ndis[tmp] < tempdis)
+                    string tmp = w.Key + "," + v;
+                    if (!ndis.ContainsKey(tmp))
+                    {
+                        continue;
+                    }
+                    else if (ndis[tmp] < tempdis)
                     {
                         tempdis = ndis[tmp];
                         tempNeigh = w.Key;
                     }
+                    
+                    
+                    
                 }
                 int d = 1 + tempdis;
                 //Console.WriteLine("//newdis = " + d);
@@ -294,7 +308,9 @@ namespace NetChange
                     //Console.WriteLine("//   me to " + w.Key + ": " + message);
                     w.Value.Write.WriteLine(message);
                 }
+              
             }
+            
         }
         //initializeer de beginwaarden in routing table
         public static void Initialize()
@@ -330,7 +346,7 @@ namespace NetChange
         //prints routing table
         public static void printTable()
         {
-            N = V.Count();
+            
             foreach (int v in V)
             {
                 int res1 = Nb[v];
