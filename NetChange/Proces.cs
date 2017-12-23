@@ -120,21 +120,16 @@ namespace NetChange
         //maakt een niewe verbinding aan
         public static void makeConnection(int poort)
         {
-            if (!V.Contains(poort))
-            {
-                Console.WriteLine("//error: poort bestaat niet");
-            }
-            else
-            {
-                // Leg verbinding aan (als client)
-                tryConnect(poort);
-                //Update je tabel
-                D[poort] = 1;
-                Nb[poort] = poort;
-                //update de informatie
-                messageMyTable(poort);
-                requestTable(poort);
-            }
+            
+            // Leg verbinding aan (als client)
+            tryConnect(poort);
+            //Update je tabel
+            D[poort] = 1;
+            Nb[poort] = poort;
+            //update de informatie
+            messageMyTable(poort);
+            requestTable(poort);
+            
         }
         //verbreek verbinding
         public static void Disconnect(int poort)
@@ -162,7 +157,7 @@ namespace NetChange
         public static void requestTable(int sendMto)
         {
             string message = "reqTab";
-            Console.WriteLine("//   me to " + sendMto + ": table request");
+            //Console.WriteLine("//   me to " + sendMto + ": table request");
             Buren[sendMto].Write.WriteLine(message);
         }
         //verzend jouw tabel informatie naar buur die opvraagt
@@ -210,7 +205,7 @@ namespace NetChange
             {
                 initInitConnect(inp[i]);
             }
-            Console.WriteLine("//starting initialize");
+            //Console.WriteLine("//starting initialize");
             Initialize();
         }
         //try connecting, sleep and try again
@@ -219,12 +214,12 @@ namespace NetChange
             try
             {
                 Buren.Add(poort, new Connection(poort));
-                Console.WriteLine("//Connected with " + poort);
+                //Console.WriteLine("//Connected with " + poort);
                 Console.WriteLine("Verbonden: " + poort);
             }
             catch
             {
-                Console.WriteLine("//Trying to connect...");
+                //Console.WriteLine("//Trying to connect...");
                 Thread.Sleep(1000);
                 tryConnect(poort);
             }
@@ -234,7 +229,7 @@ namespace NetChange
         {
             while (!Buren.ContainsKey(poort))
             {
-                Console.WriteLine("//waiting till connection with: " + poort);
+                //Console.WriteLine("//waiting till connection with: " + poort);
                 Thread.Sleep(1000);
             }
         }
@@ -270,7 +265,7 @@ namespace NetChange
                     }
                 }
                 int d = 1 + tempdis;
-                Console.WriteLine("//newdis = " + d);
+                //Console.WriteLine("//newdis = " + d);
                 if (d < N)
                 {
                     D[v] = d;
@@ -296,7 +291,7 @@ namespace NetChange
                 foreach (KeyValuePair<int, Connection> w in Buren)
                 {
                     string message = "mydist " + v + " " + D[v];
-                    Console.WriteLine("//   me to " + w.Key + ": " + message);
+                    //Console.WriteLine("//   me to " + w.Key + ": " + message);
                     w.Value.Write.WriteLine(message);
                 }
             }
@@ -304,7 +299,7 @@ namespace NetChange
         //initializeer de beginwaarden in routing table
         public static void Initialize()
         {
-            Console.WriteLine("//number of neighs: " + Buren.Count);
+           // Console.WriteLine("//number of neighs: " + Buren.Count);
             foreach (int v in V)
             {
                 InitValue(v);
@@ -315,7 +310,7 @@ namespace NetChange
             foreach (KeyValuePair<int, Connection> w in Buren)
             {
                 string message = "mydist " + MijnPoort + " " + 0;
-                Console.WriteLine("//   me to " + w.Key + ": " + message);
+                //Console.WriteLine("//   me to " + w.Key + ": " + message);
                 w.Value.Write.WriteLine(message);
             }
             Ready = true;
@@ -346,6 +341,10 @@ namespace NetChange
                 else if (res1 == MijnPoort)
                 {
                     res2 = "local";
+                }
+                else if (D[v] == N)
+                {
+                    continue;
                 }
                 else
                 {
