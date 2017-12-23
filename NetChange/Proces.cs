@@ -9,6 +9,7 @@ namespace NetChange
 {
     class Proces
     {
+        static public Object myLock = new object();
         static public int MijnPoort;
         static public Dictionary<int, Connection> Buren = new Dictionary<int, Connection>();
         static public List<int> V = new List<int>(); //List of all nodes
@@ -41,8 +42,11 @@ namespace NetChange
                     string[] inp = input.Split();
                     int poort = int.Parse(inp[1]);
                     //initInitConnect(inp[1]);
-                    makeConnection(poort);
-                    RecomputeAll();
+                    lock (myLock)
+                    {
+                        makeConnection(poort);
+                        RecomputeAll();
+                    }
                 }
                 else if (input.StartsWith("B"))
                 {
@@ -53,13 +57,19 @@ namespace NetChange
                         Console.WriteLine("Poort " + poort + " is niet bekend");
                     else
                     {
-                        int sendto = Nb[int.Parse(delen[1])];
-                        Buren[sendto].Write.WriteLine("bericht" + " " + poort + " " + delen[2]);
+                        lock (myLock)
+                        {
+                            int sendto = Nb[int.Parse(delen[1])];
+                            Buren[sendto].Write.WriteLine("bericht" + " " + poort + " " + delen[2]);
+                        }
                     }
                 }
                 else if (input.StartsWith("R"))
                 {
-                    printTable();
+                    lock (myLock)
+                    {
+                        printTable();
+                    }
                 }
                 else if (input.StartsWith("P"))
                 {
@@ -68,14 +78,17 @@ namespace NetChange
                 else if (input.StartsWith("D"))
                 {
                     string[] inp = input.Split();
-                    if (!V.Contains(int.Parse(inp[1])))
-                        Console.WriteLine("Poort " + inp[1] + " is niet bekend");
-                    else
+                    lock (myLock)
                     {
-                        int poort = int.Parse(inp[1]);
-                        //verbreek verbinding
-                        Buren[poort].Write.WriteLine("disconnect");
-                        Disconnect(poort);
+                        if (!V.Contains(int.Parse(inp[1])))
+                            Console.WriteLine("Poort " + inp[1] + " is niet bekend");
+                        else
+                        {
+                            int poort = int.Parse(inp[1]);
+                            //verbreek verbinding
+                            Buren[poort].Write.WriteLine("disconnect");
+                            Disconnect(poort);
+                        }
                     }
                 }
                 else if (input.StartsWith("X"))
@@ -238,11 +251,13 @@ namespace NetChange
 
         public static void RecomputeAll()
         {
-            foreach (int v in V)
+            lock (myLock)
             {
-                RecomputeV(v);
+                foreach (int v in V)
+                {
+                    RecomputeV(v);
+                }
             }
-
         }
         //recompute closest distance, if it is changed send message to neighs
         public static void RecomputeV(int v)

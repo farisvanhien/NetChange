@@ -62,7 +62,10 @@ namespace NetChange
             catch // Verbinding is kennelijk verbroken
             {
                 //Console.WriteLine("//verbinding met " + conP + " is verbroken");
-                Proces.Disconnect(conP);
+                lock (Proces.myLock)
+                {
+                    Proces.Disconnect(conP);
+                }
             }
         }
 
@@ -79,15 +82,18 @@ namespace NetChange
                 int v = int.Parse(inp[1]);
                 int dist = int.Parse(inp[2]);
                 //if you don't know v, add it to your list
-                if (!Proces.V.Contains(v))
+                lock (Proces.myLock)
                 {
-                    Console.WriteLine("//v does not exist yet");
-                    Proces.V.Add(v);
-                    Proces.InitValue(v);
+                    if (!Proces.V.Contains(v))
+                    {
+                        Console.WriteLine("//v does not exist yet");
+                        Proces.V.Add(v);
+                        Proces.InitValue(v);
+                    }
+                    //Console.WriteLine("//ndis[" + k + "] = " + dist);
+                    Proces.ndis[k] = dist;
+                    Proces.RecomputeV(v);
                 }
-                //Console.WriteLine("//ndis[" + k + "] = " + dist);
-                Proces.ndis[k] = dist;
-                Proces.RecomputeV(v);
             }
             else if (input.StartsWith("bericht"))
             {
@@ -97,14 +103,20 @@ namespace NetChange
                     Console.WriteLine(delen[2]);
                 else
                 {
-                    int sendto = Proces.Nb[int.Parse(delen[1])];
-                    Console.WriteLine("Bericht voor {0} doorgestuurd naar {1}", delen[1], sendto);
-                    Proces.Buren[sendto].Write.WriteLine(input);
+                    lock (Proces.myLock)
+                    {
+                        int sendto = Proces.Nb[int.Parse(delen[1])];
+                        Console.WriteLine("Bericht voor {0} doorgestuurd naar {1}", delen[1], sendto);
+                        Proces.Buren[sendto].Write.WriteLine(input);
+                    }
                 }
             }
             else if (input.StartsWith("reqTab"))
             {
-                Proces.messageMyTable(conP);
+                lock (Proces.myLock)
+                {
+                    Proces.messageMyTable(conP);
+                }
             }
             else if (input.StartsWith("disconnect"))
             {
