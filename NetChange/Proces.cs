@@ -330,6 +330,7 @@ namespace NetChange
         //prints routing table
         public static void printTable()
         {
+            N = V.Count();
             foreach (int v in V)
             {
                 int res1 = Nb[v];
