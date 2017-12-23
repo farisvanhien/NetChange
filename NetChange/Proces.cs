@@ -141,6 +141,7 @@ namespace NetChange
         {
             Console.WriteLine("//disconnecting...");
             Buren.Remove(poort);
+            Console.WriteLine("Verbroken: " + poort);
             D[poort] = N;
             Nb[poort] = udef;
             foreach (KeyValuePair<int, Connection> w in Buren)
