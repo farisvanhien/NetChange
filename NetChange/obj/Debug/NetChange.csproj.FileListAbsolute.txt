@@ -4,3 +4,10 @@ D:\School\conc\Prakticum 2\NetChange\NetChange\bin\Debug\NetChange.exe
 D:\School\conc\Prakticum 2\NetChange\NetChange\bin\Debug\NetChange.pdb
 D:\School\conc\Prakticum 2\NetChange\NetChange\obj\Debug\NetChange.exe
 D:\School\conc\Prakticum 2\NetChange\NetChange\obj\Debug\NetChange.pdb
+D:\Jeroen\Documents\NetChange\NetChange\obj\Debug\NetChange.csprojResolveAssemblyReference.cache
+D:\Jeroen\Documents\NetChange\NetChange\obj\Debug\NetChange.csproj.CoreCompileInputs.cache
+D:\Jeroen\Documents\NetChange\NetChange\obj\Debug\NetChange.exe
+D:\Jeroen\Documents\NetChange\NetChange\obj\Debug\NetChange.pdb
+D:\Jeroen\Documents\NetChange\NetChange\bin\Debug\NetChange.exe.config
+D:\Jeroen\Documents\NetChange\NetChange\bin\Debug\NetChange.exe
+D:\Jeroen\Documents\NetChange\NetChange\bin\Debug\NetChange.pdb

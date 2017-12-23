@@ -49,7 +49,6 @@ namespace NetChange
             //first check if all connections are set and initialized
             while (!Proces.Ready)
             {
-               // Console.WriteLine("//waiting till initializing is done...");
                 Thread.Sleep(1000);
             }
             try
@@ -61,7 +60,6 @@ namespace NetChange
             }
             catch // Verbinding is kennelijk verbroken
             {
-                //Console.WriteLine("//verbinding met " + conP + " is verbroken");
                 lock (Proces.myLock)
                 {
                     Proces.Disconnect(conP);
@@ -75,7 +73,6 @@ namespace NetChange
             string input = Read.ReadLine();
             if (input.StartsWith("mydist"))
             {
-                //Console.WriteLine("//    from " + conP + ": " + input);
                 //update distance
                 string[] inp = input.Split();
                 string k = "" + conP + "," + inp[1];
@@ -90,7 +87,6 @@ namespace NetChange
                         Proces.V.Add(v);
                         Proces.InitValue(v);
                     }
-                    //Console.WriteLine("//ndis[" + k + "] = " + dist);
                     Proces.ndis[k] = dist;
                     Proces.RecomputeV(v);
                 }
