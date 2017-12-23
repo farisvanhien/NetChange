@@ -68,7 +68,7 @@ namespace NetChange
             string input = Read.ReadLine();
             if (input.StartsWith("mydist"))
             {
-                Console.WriteLine("//    from " +conP + ": " + input);
+                Console.WriteLine("//    from " + conP + ": " + input);
                 //update distance
                 string[] inp = input.Split();
                 string k = "" + conP + "," + inp[1];
@@ -88,7 +88,7 @@ namespace NetChange
             else if (input.StartsWith("bericht"))
             {
                 string[] delen = input.Split(new char[] { ' ' }, 3);
-                
+
                 if (delen[1] == Proces.MijnPoort.ToString())
                     Console.WriteLine(delen[2]);
                 else
@@ -97,7 +97,10 @@ namespace NetChange
                     Console.WriteLine("Bericht voor {0} doorgestuurd naar {1}", delen[1], sendto);
                     Proces.Buren[sendto].Write.WriteLine(input);
                 }
-                    
+            }
+            else if (input.StartsWith("reqTab"))
+            {
+                Proces.messageMyTable(conP);
             }
         }
     }

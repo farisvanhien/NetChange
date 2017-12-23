@@ -41,11 +41,7 @@ namespace NetChange
                     string[] inp = input.Split();
                     int poort = int.Parse(inp[1]);
                     //initInitConnect(inp[1]);
-                    Object thisLock = new object();
-                    lock (thisLock)
-                    {
-                        makeConnection(poort);
-                    }
+                    makeConnection(poort);
                 }
                 else if (input.StartsWith("B"))
                 {
@@ -132,13 +128,9 @@ namespace NetChange
                 //Update je tabel
                 D[poort] = 1;
                 Nb[poort] = poort;
-                //laat al je buren recomputen
-                foreach (KeyValuePair<int, Connection> w in Buren)
-                {
-                    myDistMessage(poort, w.Key, 1);
-                }
-                //Laat de ander van jouw weten en zijn informatie updaten
-                myDistMessage(MijnPoort, poort, 0);
+                //update de informatie
+                messageMyTable(poort);
+                requestTable(poort);
             }
         }
 
@@ -147,6 +139,25 @@ namespace NetChange
             string message = "mydist " + distanceTo + " " + dist;
             Console.WriteLine("//   me to " + sendMto + ": " + message);
             Buren[sendMto].Write.WriteLine(message);
+        }
+        public static void requestTable(int sendMto)
+        {
+            string message = "reqTab";
+            Console.WriteLine("//   me to " + sendMto + ": table request");
+            Buren[sendMto].Write.WriteLine(message);
+        }
+        public static void messageMyTable(int newPoort)
+        {
+            //laat al je buren weten van je nieuwe connectie
+            foreach (KeyValuePair<int, Connection> w in Buren)
+            {
+                myDistMessage(newPoort, w.Key, 1);
+            }
+            //Laat de niew connectie van jouw routing table weten 
+            foreach (int v in V)
+            {
+                myDistMessage(v, newPoort, D[v]);
+            }
         }
 
         //maak verbinding met een poort, en wacht! tot het lukt
