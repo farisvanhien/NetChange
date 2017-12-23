@@ -146,7 +146,7 @@ namespace NetChange
         //verbreek verbinding
         public static void Disconnect(int poort)
         {
-            Console.WriteLine("//disconnecting...");
+            //Console.WriteLine("//disconnecting...");
             Buren.Remove(poort);
             Console.WriteLine("Verbroken: " + poort);
             D[poort] = N;
@@ -197,7 +197,9 @@ namespace NetChange
                 V.Add(poort);
             }
             if (Buren.ContainsKey(poort))
-                Console.WriteLine("//Hier is al verbinding naar!");
+            {
+                //Console.WriteLine("//Hier is al verbinding naar!");
+            }
             else if (MijnPoort < poort)
             {
                 // Leg verbinding aan (als client)
